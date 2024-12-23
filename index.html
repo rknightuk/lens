@@ -1,0 +1,689 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="prism.css" rel="stylesheet" />
+
+    <title>Lens - Check your meta tags, icons, and rss feeds</title>
+    <meta property="og:title" content="Lens">
+    <meta property="og:url" content="https://lens.rknight.me">
+    <meta name="description" content="Check your meta tags, icons, and rss feeds">
+    <meta property="og:description" content="Check your meta tags, icons, and rss feeds">
+    <meta property="og:image" content="/assets/preview.jpg">
+    <meta name="apple-mobile-web-app-title" content="Lens" />
+    <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <meta name="fediverse:creator" content="@robb@social.lol">
+
+    <meta name="theme-color" content="#9b59b6">
+
+    <style>
+        @font-face {
+            font-family: 'Grandsans-Regular';
+            src: url('assets/fonts/Grandsans-Regular.woff2 ') format('woff2');
+            font-display: swap;
+        }
+
+        :root {
+            --color-bg: #f8f8f8;
+            --color-bg-alt: #eee;
+            --color-body: #49334b;
+            --color-primary: #9b59b6;
+        }
+
+        header {
+            text-align: center;
+            padding: 0.5em 0;
+            background-color: var(--color-primary);
+            background-image: linear-gradient(to right bottom, #9b59b6, #8e59b7, #8059b7, #7159b7, #6159b6);
+            font-weight: bold;
+            color: white;
+        }
+
+        section:nth-child(odd) {
+            background-color: var(--color-bg-alt);
+        }
+
+        h1 {
+            font-family: 'Grandsans-Regular', sans-serif;
+            font-size: 2.5em;
+            letter-spacing: 0.2em;
+            color: #fff;
+            text-decoration: underline;
+            text-decoration-color: var(--color-body);
+            text-decoration-thickness: 5px;
+            text-underline-offset: 10px;
+        }
+
+        h2, h3 {
+            font-family: 'Grandsans-Regular', sans-serif;
+            text-decoration: underline;
+            text-decoration-color: var(--color-primary);
+            color: var(--color-body);
+            text-decoration-thickness: 3px;
+            text-underline-offset: 5px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-family: system-ui, sans-serif;
+            font-weight: normal;
+            font-size: 1.2em;
+            line-height: 1.5rem;
+            background-color: var(--color-bg);
+            color: var(--color-body);
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: auto;
+            padding: 1rem 0.5rem;
+        }
+
+        code {
+            font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+            font-weight: normal;
+        }
+
+        dt {
+            display: flex;
+            align-items: center;
+        }
+
+        dt svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        .columns {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+
+        @media (max-width: 500px) {
+            html {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 750px) {
+            .columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tick {
+            color: #2ecc71;
+        }
+
+        .cross {
+            color: #e74c3c;
+        }
+
+        ul.checklist {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul.checklist ul {
+            list-style-type: none;
+            padding-left: 15px;
+        }
+
+        ul.checklist.li {
+            margin: 0; padding: 0;
+        }
+
+        .ul-first {
+            padding: 0;
+        }
+
+        li svg,
+        .checklist svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        .checklist div {
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist p {
+            padding: 0;
+            margin: 0;
+        }
+
+        .preview {
+            background-color: white;
+            border: 1px solid #868e96;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .preview-image {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            aspect-ratio: 2/1;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-color: #868e96;
+            border-bottom: 1px solid #868e96;
+        }
+
+        .preview-details {
+            padding: 10px;
+        }
+        
+        .preview-details-title {
+            font-weight: bold;
+        }
+
+        .preview-details-site {
+            font-size: 0.9em;
+            color: #868e96;
+        }
+
+        .preview-details-fediverse {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #868e96;
+            padding: 10px;
+        }
+        .preview-details-fediverse svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        details {
+            margin: 1em 0;
+        }
+        details:hover {
+            cursor: pointer;
+        }
+
+        pre {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 0.8em;
+            padding: 5px;
+            border: 1px solid #868e96;
+        }
+
+        section h2 {
+            text-align: center;
+            padding: 0.5em 0 0 0;
+        }
+    </style>
+
+<style>
+    .checklist li {
+        background: url(circle.svg) no-repeat 0 3px;
+        padding-left: 25px;
+        margin: 3px 0;
+    }
+
+    .checklist li.l-tick {
+        background: url(tick.svg) no-repeat 0 3px;
+        padding-left: 25px;
+        margin: 3px 0;
+    }
+
+    .checklist li.l-cross {
+        background: url(cross.svg) no-repeat 0 3px;
+        padding-left: 25px;
+        margin: 3px 0;
+    }
+
+    .preview-details-fediverse.disabled {
+        color: #e3e3e3;
+    }
+
+    .preview-details-fediverse.enabled {
+        color: inherit;
+    }
+
+    .preview-details-fediverse.enabled svg {
+        color: #5c51e7;
+    }
+
+    input {
+        font-size: 1.2em;
+        width: 100%;
+        padding: 5px;
+        text-align: center;
+    }
+
+    button {
+        font-size: 1.2em;
+        box-shadow: none;
+        border: none;
+        padding: 5px 10px;
+        background-color: var(--color-primary);
+        color: white;
+        font-family: 'Grandsans-Regular', sans-serif;
+        letter-spacing: 2px;;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    form {
+        text-align: center;
+    }
+
+    .samples {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0;
+    }
+
+    .samples button {
+        font-size: 0.9em;
+        padding: 5px 10px;
+    }
+</style>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="{ 
+    url: null,
+    loading: false,
+    error: false,
+    site: {
+        url: null,
+        charset: null,
+        domain: 'https://example.com',
+        host: 'example.com',
+        title: 'A Title', 
+        description: 'a description', 
+        fediverse: null, 
+        image: null,
+        icon: null,
+        themeColor: null,
+        found: [],
+        feeds: [],
+    }
+}">
+
+
+        <header>
+            <h1>Lens</h1>
+
+            <p>Check your meta tags, icons, and rss feeds</p>
+        </header>
+
+        <section>
+
+            <div class="wrap">
+
+                <form
+                    @submit.prevent="
+                        loading = true;
+                        error = false;
+                        if (!url.startsWith('http')) {
+                            url = 'https://' + url;
+                        }
+                        const resp = await fetch(`/api?url=${url}`);
+                        const data = await resp.json();
+                        if (data.error) {
+                            error = true;
+                        } else {
+                            site = data;
+                        }
+                        loading = false;
+                    "
+                >
+                <p><input x-model="url" :class="error ? 'error' : ''" type="text" required></input></p>
+                
+                <button 
+                    type="submit"
+                    x-text="loading ? 'Loading...' : 'Preview'"
+                    x-ref="submitButton"
+                ></button>
+
+                <p x-show="error"><em>An error happened trying to fetch that page, sorry</em> 😔</p>
+                </form>
+
+                <p style="margin-bottom: 0;text-align: center;">Enter your website above or try one of these:</p>
+
+                <div class="samples">
+                    <button x-on:click="url = 'https://rknight.me'; setTimeout(() => { $refs.submitButton.click() }, 0);">Robb</button>
+                    <button x-on:click="url = 'https://gkeenan.co'; setTimeout(() => { $refs.submitButton.click() }, 0);">Keenan</button>
+                    <button x-on:click="url = 'https://localghost.dev'; setTimeout(() => { $refs.submitButton.click() }, 0);">Sophie</button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+            <h2>Metadata and RSS</h2>
+    <div class="columns wrap">
+        <div>
+            <div class="preview">
+                <div id="preview-image" class="preview-image" :style="`background-image: url(${site.image})`"></div>
+                <div class="preview-details">
+                    <div class="preview-details-title" x-html="site.title">A Title</div>
+                    <div class="preview-details-desc" x-html="site.description">a description</div>
+                    <div class="preview-details-site" x-html="site.host">example.com</div>
+                </div>
+                <div class="preview-details-fediverse disabled" :class="site.fediverse ? 'enabled' : 'disabled'">
+                    <svg class="icon"><use xlink:href="#mastodon"></use></svg> <div>More from this person</div>
+                </div>
+            </div>
+            <p x-show="site.url"><a :href="site.url" x-html="site.url" target="_blank"></a></p>
+        </div>
+        <div>
+            <ul class="checklist">
+                <li :class="site.found.length === 0 || (site.found.includes('charset') ? 'l-tick' : 'l-cross')"><code>charset</code></li>
+                <li :class="site.found.length === 0 || (site.found.includes('title') ? 'l-tick' : 'l-cross')"><code>title</code></li>
+                <li :class="site.found.length === 0 || (site.found.includes('og:title') ? 'l-tick' : 'l-cross')"><code>og:title</code></li>
+                <li :class="site.found.length === 0 || (site.found.includes('description') ? 'l-tick' : 'l-cross')"><code>description</code></li>
+                <li :class="site.found.length === 0 || (site.found.includes('og:description') ? 'l-tick' : 'l-cross')"><code>og:description</code></li>
+                <li :class="site.found.length === 0 || (site.found.includes('fediverse:creator') ? 'l-tick' : 'l-cross')"><code>fediverse:creator</code> *</li>
+                <li :class="site.feeds.length === 0 || (site.feeds.length > 0 ? 'l-tick' : 'l-cross')"><code>rss/atom/json</code></li>
+                <ul>
+                    <template x-for="feed in site.feeds">
+                        <li class="l-tick"><a :href="feed.href" target="_blank" x-text="feed.title"></a> <span x-text="feed.type"></span></li>
+                    </template>
+                </ul>
+            </ul>
+        
+            <hr>
+            <p style="margin-top: 10px"><em><small>* Your domain also needs to be added to the Author Attribution section under Public Profile > Verification in your Mastodon settings for this to work. Requires Mastodon v4.3.</small></em></p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Icons and Colors</h2>
+    <div class="wrap">
+    <div class="columns">
+        <div>
+            <div class="browser">
+                <div class="browser-buttons">
+                    <div class="browser-button red"></div>
+                    <div class="browser-button yellow"></div>
+                    <div class="browser-button green"></div>
+                </div>
+                <div class="browser-tab">
+                    <div class="browser-tab-icon"><img :src="site.icon"></div>
+                    <div class="browser-tab-title" x-text="site.title"></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <ul class="checklist">
+                <li :class="site.found.length == 0 || (site.found.includes('icon') ? 'l-tick' : 'l-cross')"><code>icon</code></li>
+                <li :class="site.found.length == 0 || (site.found.includes('title') ? 'l-tick' : 'l-cross')"><code>title</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div>
+            <div class="iphone">
+                <div class="iphone-top" :style="`background-color: ${site.themeColor}`">
+                    <div class="iphone-island"></div>
+                    <div class="iphone-address" x-html="site.host"></div>
+                </div>
+            </div>
+            <div class="homescreen">
+                <div class="homescreen-icon" :style="`background-image: url(${site.homeIcon})`"></div>
+                <div class="homescreen-icon"></div>
+                <div class="homescreen-icon"></div>
+                <div class="homescreen-icon"></div>
+            </div>
+        </div>
+        <div>
+            <ul class="checklist">
+                <li :class="site.found.length == 0 || (site.found.includes('theme-color') ? 'l-tick' : 'l-cross')"><code>theme-color</code></li>
+                <li :class="site.found.length == 0 || (site.found.includes('apple-touch-icon') ? 'l-tick' : 'l-cross')"><code>apple-touch-icon</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</section>
+
+<section>
+    <div class="wrap">
+    <h2>Code Examples</h2>
+
+    <h3>Metadata</h3>
+
+    <pre><code class="language-html">&lt;meta charset="UTF-8"&gt;
+&lt;title&gt;A Title&lt;/title&gt;
+&lt;meta property="og:title" content="A Title"&gt;
+&lt;meta property="og:url" content="https://example.com/post/"&gt;
+&lt;meta name="description" content="A description of the post"&gt;
+&lt;meta property="og:description" content="A description of the post"&gt;
+&lt;meta property="og:image" content="https://example.com/path/to/image.png"&gt;
+&lt;meta name="fediverse:creator" content="@person@exampleinstance.com"&gt;</code></pre>
+
+    <h3>RSS Feeds</h3>
+
+    <pre><code class="language-html">&lt;link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://example.com/feed.xml"&gt;
+&lt;link rel="alternate" type="application/atom+xml" title="Atom Feed" href="https://example.com/feed.atom"&gt;
+&lt;link rel="alternate" type="application/json" title="JSON Feed" href="https://example.com/feed.json"&gt;</code></pre>
+
+<h3>Icons and Colors</h3>
+
+    <pre><code class="language-html">&lt;link rel="icon" type="image/x-icon" href="/favicon.ico"&gt;
+&lt;meta name="theme-color" content="#ff00ff"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;</code></pre>
+
+</div>
+</section>
+
+    <style>
+        .browser {
+            display: flex;
+            background-color: #d3e3fd;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding: 0 5px;
+            margin-top: 10px;
+        }
+
+        .browser-tab {
+            border: 1px solid #d6cfcf;
+            border-bottom: none;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: #ffffff;
+            padding: 5px 20px 5px 10px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            max-width: 220px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .browser-tab-icon img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            background-color: #f1f1f1;
+        }
+
+        .browser-buttons {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .browser-button {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin: 5px;
+            border: 1px solid #b5b5b5;
+        }
+
+        .browser-tab-title {
+            overflow: hidden;
+        }
+
+        .browser-button.red { background-color: #fc6057; }
+        .browser-button.yellow { background-color: #fdbc2e; }
+        .browser-button.green { background-color: #28c840; }
+    </style>
+
+    <!-- <div class="checklist">
+        <div><svg class="icon tick"><use xlink:href="#tick"></use></svg> <p><code>theme-color</code></p></div>
+    </div> -->
+
+    <style>
+        .iphone {
+            border: 3px solid black;
+            border-bottom:none;
+            max-width: 400px;
+            margin: 10px auto;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            overflow: hidden;
+        }
+
+        .iphone-top {
+            background-color: #fff;
+            padding: 15px 0;
+        }
+
+        .iphone-island {
+            width: 40%;
+            background-color: black;
+            margin: 0 auto;
+            border-radius: 20px;
+            height: 30px;
+        }
+
+        .iphone-address {
+            background-color: #e3e3e3;
+            padding: 0 5px;
+            border-radius: 5px;
+            margin: 10px 5px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+    </style>
+
+    <style>
+        .homescreen {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            max-width: 400px;
+            margin: 10px auto;
+            grid-gap: 40px;
+        }
+
+        .homescreen-icon {
+            aspect-ratio: 1/1;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            background-size: contain;
+        }
+
+        .homescreen-icon > div {
+            display: flex;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: underline;
+            text-underline-offset: 5px;
+            text-decoration-thickness: 2px;
+            text-decoration-color: var(--color-body);
+            color: var(--color-primary);
+        }
+
+        a:hover {
+            text-decoration-color: var(--color-primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: var(--color-primary);
+            background-image: linear-gradient(to right bottom, #9b59b6, #8e59b7, #8059b7, #7159b7, #6159b6);
+            color: white;
+        }
+
+        footer a {
+            color: white;
+        }
+    </style>
+
+    <footer>
+        a <a href="https://rknight.me">robb knight</a> curio
+    </footer>
+
+
+
+</div>
+
+    <svg width="0" height="0" class="hidden">
+        <symbol version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 24 24" id="cross">
+            <defs></defs>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Artboard-4" transform="translate(-356.000000, -1134.000000)">
+                    <g id="Extras" transform="translate(48.000000, 1046.000000)">
+                        <g id="no" transform="translate(308.000000, 88.000000)">
+                            <circle id="Oval-1" stroke="currentColor" stroke-width="2" cx="12" cy="12" r="10"></circle>
+                            <path
+                                d="M13,11 L13,7.99539757 C13,7.4556644 12.5522847,7 12,7 C11.4438648,7 11,7.44565467 11,7.99539757 L11,11 L7.99539757,11 C7.4556644,11 7,11.4477153 7,12 C7,12.5561352 7.44565467,13 7.99539757,13 L11,13 L11,16.0046024 C11,16.5443356 11.4477153,17 12,17 C12.5561352,17 13,16.5543453 13,16.0046024 L13,13 L16.0046024,13 C16.5443356,13 17,12.5522847 17,12 C17,11.4438648 16.5543453,11 16.0046024,11 L13,11 Z"
+                                id="Combined-Shape" fill="currentColor"
+                                transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) ">
+                            </path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </symbol>
+        <symbol version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 24 24" id="tick">
+            <defs></defs>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Artboard-4" transform="translate(-400.000000, -1134.000000)" stroke="currentColor" stroke-width="2">
+                    <g id="Extras" transform="translate(48.000000, 1046.000000)">
+                        <g id="yes" transform="translate(352.000000, 88.000000)">
+                            <circle id="Oval-1" cx="12" cy="12" r="10"></circle>
+                            <polyline id="Path-288" stroke-linecap="round" stroke-linejoin="round"
+                                points="8.5 12.5 10.5 14.5 15.5 9.5"></polyline>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </symbol>
+        <symbol role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="mastodon">
+            <path fill="currentColor" d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"></path>
+         </symbol>
+    </svg>
+
+    <script src="prism.js"></script>
+</body>
+</html>

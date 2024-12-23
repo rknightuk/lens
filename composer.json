@@ -1,0 +1,10 @@
+{
+    "require": {
+        "phpfastcache/phpfastcache": "^9.2"
+    },
+    "autoload": {
+		"psr-4": {
+			"Lens\\": "api"
+		}
+	}
+}
