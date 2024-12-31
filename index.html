@@ -307,25 +307,29 @@
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data="{ 
-    url: null,
-    loading: false,
-    error: false,
-    site: {
-        url: null,
-        charset: null,
-        domain: 'https://example.com',
-        host: 'example.com',
-        title: 'A Title', 
-        description: 'a description', 
-        fediverse: null, 
-        image: null,
-        icon: null,
-        themeColor: null,
-        found: [],
-        feeds: [],
-    }
-}">
+<body 
+    x-data="{ 
+        url: window.location.search.replace('?url=', '') || '',
+        loading: false,
+        error: false,
+        site: {
+            url: null,
+            charset: null,
+            domain: 'https://example.com',
+            host: 'example.com',
+            title: 'A Title', 
+            description: 'a description', 
+            fediverse: null, 
+            image: null,
+            icon: null,
+            themeColor: null,
+            found: [],
+            feeds: [],
+        }
+    }"
+    x-init="
+        if (url) setTimeout(() => { $refs.submitButton.click() }, 0)"
+>
 
 
         <header>
