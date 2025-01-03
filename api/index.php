@@ -58,10 +58,12 @@ $site = [
     'icon' => null,
     'homeIcon' => null,
     'themeColor' => null,
+    'charset' => null,
 
     'found' => [],
     'feeds' => [],
     'relme' => [],
+    'raw' => [],
 ];
 
 $data = [
@@ -90,9 +92,12 @@ $data = [
     'feeds' => [],
 
     'relme' => [],
+
+    'raw' => [],
 ];
 
 foreach (iterator_to_array($titleElements) as $el) {
+    $data['raw'][] = simplexml_import_dom($el)->asXML();
     $data['title'] = $el->nodeValue;
     $site['found'][] = 'title';
 }
@@ -103,49 +108,59 @@ foreach (iterator_to_array($metaElements) as $mel) {
     $content = $mel->getAttribute('content');
 
     if ($mel->getAttribute('charset')) {
-        $site['charset'] = $mel->getAttribute('charset');
+        $data['charset'] = $mel->getAttribute('charset');
         $site['found'][] = 'charset';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($property === 'og:title' || $name === 'og:title') {
         $data['og:title'] = $content;
         $site['found'][] = 'og:title';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
     if ($name === 'description') {
         $data['description'] = $content;
         $site['found'][] = 'description';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
     if ($property === 'og:description' || $name === 'og:description') {
         $data['og:description'] = $content;
         $site['found'][] = 'og:description';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
     if ($property === 'og:image' || $name === 'og:image') {
         $data['og:image'] = $normaliseUrl($content);
         $site['found'][] = 'og:image';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($property === 'fediverse:creator') {
         $data['fediverse:creator'] = $content;
         $site['found'][] = 'fediverse:creator';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($name === 'fediverse:creator') {
         $data['fediverse:creator'] = $content;
         $site['found'][] = 'fediverse:creator';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($name === 'generator') {
         $data['generator'] = $content;
         $site['found'][] = 'generator';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
     if ($name === 'theme-color') {
         $data['theme-color'] = $content;
         $site['found'][] = 'theme-color';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($property === 'og:url') {
         $data['og:url'] = $normaliseUrl($content);
         $site['found'][] = 'og:url';
+        $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 }
 
@@ -165,16 +180,22 @@ foreach (iterator_to_array($linkElements) as $link) {
     if ($type === 'image/x-icon') {
         $data['icon'] = $href;
         $site['found'][] = 'icon';
+        $data['raw'][] = simplexml_import_dom($link)->asXML();
     }
     if ($rel === 'icon') {
         $data['icon'] = $href;
         $site['found'][] = 'icon';
+        $data['raw'][] = simplexml_import_dom($link)->asXML();
     }
     if ($rel === 'apple-touch-icon') {
         $data['apple-touch-icon'] = $href;
         $site['found'][] = 'apple-touch-icon';
+        $data['raw'][] = simplexml_import_dom($link)->asXML();
     }
-    if ($rel === 'blogroll') $data['blogroll'][] = [ 'title' => $title, 'href' => $href ];
+    if ($rel === 'blogroll') {
+        $data['blogroll'][] = [ 'title' => $title, 'href' => $href ];
+        $data['raw'][] = simplexml_import_dom($link)->asXML();
+    }
 }
 
 if (is_null($data['icon'])) {
@@ -203,6 +224,7 @@ $site['icon'] = $data['icon'];
 $site['themeColor'] = $data['theme-color'];
 $site['homeIcon'] = $data['apple-touch-icon'];
 $site['relme'] = $data['relme'];
+$site['raw'] = implode("\n", $data['raw']);
 
 $ttl = 60 * 2;
 

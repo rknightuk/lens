@@ -326,6 +326,7 @@
             found: [],
             feeds: [],
             relme: [],
+            raw: null,
         }
     }"
     x-init="
@@ -477,6 +478,14 @@
     </div>
 </div>
 
+</section>
+
+<section>
+    <div class="wrap">
+    <h2>HTML Found by Lens</h2>
+
+    <pre><code class="language-html" x-text="site.raw"></code></pre>
+    </div>
 </section>
 
 <section>
