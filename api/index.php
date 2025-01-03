@@ -8,7 +8,7 @@ use Phpfastcache\Helper\Psr16Adapter;
 
 $Psr16Adapter = new Psr16Adapter('Files');
 
-$url = $_GET['url'];
+$url = mb_strtolower($_GET['url']);
 $domain = parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST);
 $host = parse_url($url, PHP_URL_HOST);
 ini_set('user_agent', 'Lens by Robb Knight; https://lens.rknight.me');
