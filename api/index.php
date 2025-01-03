@@ -64,6 +64,7 @@ $site = [
     'feeds' => [],
     'relme' => [],
     'raw' => [],
+    'masto_settings' => null,
 ];
 
 $data = [
@@ -136,12 +137,14 @@ foreach (iterator_to_array($metaElements) as $mel) {
 
     if ($property === 'fediverse:creator') {
         $data['fediverse:creator'] = $content;
+        $site['masto_settings'] = 'https://' . (explode('@', $content)[2] ?? '') . '/settings/verification';
         $site['found'][] = 'fediverse:creator';
         $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }
 
     if ($name === 'fediverse:creator') {
         $data['fediverse:creator'] = $content;
+        $site['masto_settings'] = 'https://' . (explode('@', $content)[2] ?? '') . '/settings/verification';
         $site['found'][] = 'fediverse:creator';
         $data['raw'][] = simplexml_import_dom($mel)->asXML();
     }

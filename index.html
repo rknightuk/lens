@@ -327,6 +327,7 @@
             feeds: [],
             relme: [],
             raw: null,
+            masto_settings: null,
         }
     }"
     x-init="
@@ -424,7 +425,8 @@
             </ul>
         
             <hr>
-            <p style="margin-top: 10px"><em><small>* Your domain also needs to be added to the Author Attribution section under Public Profile > Verification in your Mastodon settings for this to work. Requires Mastodon v4.3.</small></em></p>
+            <p style="margin-top: 10px">
+                <em><small>* Your domain also needs to be added to the Author Attribution section under Public Profile > Verification in your Mastodon settings for this to work. Requires Mastodon v4.3. <a :href="site.masto_settings" x-show="site.fediverse" target="_blank">Edit Author Attribution settings</a></small></em></p>
         </div>
     </div>
 </section>
