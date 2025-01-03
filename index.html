@@ -325,6 +325,7 @@
             themeColor: null,
             found: [],
             feeds: [],
+            relme: [],
         }
     }"
     x-init="
@@ -411,6 +412,12 @@
                 <ul>
                     <template x-for="feed in site.feeds">
                         <li class="l-tick"><a :href="feed.href" target="_blank" x-text="feed.title"></a> <span x-text="feed.type"></span></li>
+                    </template>
+                </ul>
+                <li :class="site.relme.length === 0 || (site.relme.length > 0 ? 'l-tick' : 'l-cross')"><code>rel="me"</code></li>
+                <ul>
+                    <template x-for="rel in site.relme">
+                        <li class="l-tick"><a :href="rel" target="_blank" x-text="rel"></a></li>
                     </template>
                 </ul>
             </ul>
