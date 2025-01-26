@@ -217,6 +217,12 @@ foreach (iterator_to_array($aElements) as $a) {
     if ($rel === 'me') $data['relme'][] = $href;
 }
 
+foreach (iterator_to_array($linkElements) as $l) {
+    $rel = $l->getAttribute('rel');
+    $href = $normaliseUrl($l->getAttribute('href'));
+    if ($rel === 'me') $data['relme'][] = $href;
+}
+
 $site['charset'] = $data['charset'];
 $site['title'] = $data['og:title'] ?? $data['title'];
 $site['description'] = $data['og:description'] ?? $data['description'];
