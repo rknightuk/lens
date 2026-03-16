@@ -177,6 +177,7 @@ foreach (iterator_to_array($linkElements) as $link) {
         'application/rss+xml' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'rss' ],
         'application/atom+xml' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'atom' ],
         'application/json' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'json' ],
+        'application/feed+json' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'json' ],
         default => null,
     };
     
