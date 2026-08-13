@@ -31,6 +31,7 @@ try {
 } catch (\Throwable $e) {
     echo json_encode([
         'error' => 'Unable to fetch URL',
+        'message' => $e->getMessage(),
     ]);
     die;
 }
@@ -40,7 +41,7 @@ $metaElements = $document->getElementsByTagName('meta');
 $linkElements = $document->getElementsByTagName('link');
 $aElements = $document->getElementsByTagName('a');
 
-$normaliseUrl = function($path) use ($domain) {
+$normaliseUrl = function ($path) use ($domain) {
     if (strpos($path, 'http') === 0) return $path;
     if (strpos($path, '/') === 0) return $domain . $path;
     return $domain . '/' . $path;
@@ -75,17 +76,17 @@ $data = [
 
     'title' => null,
     'og:title' => null,
-    
+
     'description' => null,
     'og:description' => null,
     'og:image' => null,
-    
+
     'icon' => null,
     'apple-touch-icon' => null,
     'theme-color' => null,
-    
+
     'fediverse:creator' => null,
-    
+
     'generator' => null,
 
     'blogroll' => [],
@@ -174,13 +175,13 @@ foreach (iterator_to_array($linkElements) as $link) {
     $rel = $link->getAttribute('rel');
 
     match ($type) {
-        'application/rss+xml' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'rss' ],
-        'application/atom+xml' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'atom' ],
-        'application/json' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'json' ],
-        'application/feed+json' => $data['feeds'][] = [ 'title' => $title, 'href' => $href, 'type' => 'json' ],
+        'application/rss+xml' => $data['feeds'][] = ['title' => $title, 'href' => $href, 'type' => 'rss'],
+        'application/atom+xml' => $data['feeds'][] = ['title' => $title, 'href' => $href, 'type' => 'atom'],
+        'application/json' => $data['feeds'][] = ['title' => $title, 'href' => $href, 'type' => 'json'],
+        'application/feed+json' => $data['feeds'][] = ['title' => $title, 'href' => $href, 'type' => 'json'],
         default => null,
     };
-    
+
     if ($type === 'image/x-icon') {
         $data['icon'] = $href;
         $site['found'][] = 'icon';
@@ -197,7 +198,7 @@ foreach (iterator_to_array($linkElements) as $link) {
         $data['raw'][] = simplexml_import_dom($link)->asXML();
     }
     if ($rel === 'blogroll') {
-        $data['blogroll'][] = [ 'title' => $title, 'href' => $href ];
+        $data['blogroll'][] = ['title' => $title, 'href' => $href];
         $data['raw'][] = simplexml_import_dom($link)->asXML();
     }
 }
@@ -241,8 +242,8 @@ $ttl = 60 * 2;
 if (in_array($url, [
     'https://rknight.me',
     'https://gkeenan.co',
-    'https://localghost.dev'])
-) {
+    'https://localghost.dev'
+])) {
     $ttl = 60 * 15;
 }
 
