@@ -99,9 +99,11 @@ $data = [
 ];
 
 foreach (iterator_to_array($titleElements) as $el) {
-    $data['raw'][] = simplexml_import_dom($el)->asXML();
-    $data['title'] = $el->nodeValue;
-    $site['found'][] = 'title';
+    if ($el->parentNode?->tagName === 'head') {
+        $data['raw'][] = simplexml_import_dom($el)->asXML();
+        $data['title'] = $el->nodeValue;
+        $site['found'][] = 'title';
+    }
 }
 
 foreach (iterator_to_array($metaElements) as $mel) {
